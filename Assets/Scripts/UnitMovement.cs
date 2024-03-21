@@ -48,7 +48,7 @@ public class UnitMovement : MonoBehaviour
             
         }
         position = transform.position;
-        Debug.DrawLine(position, path[j]);
+        //Debug.DrawLine(position, path[j]);
         if(avoid == true)
         {
             Avoid();
@@ -70,8 +70,10 @@ public class UnitMovement : MonoBehaviour
         }
        
     }
-    public void Walkto(Vector2 wkp, int n,bool walkAttack_)
+    public void Walkto(Vector2 wkp, int n, bool walkAttack_)
     {
+        enabled = true;
+        position = transform.position;
         num = n;
         walkpos = wkp;
         Pathfinder pathfinder = Camera.main.GetComponent<Pathfinder>();
@@ -80,7 +82,20 @@ public class UnitMovement : MonoBehaviour
         j = 0;
         walkAttack = walkAttack_;
     }
-   
+
+    public void Walkto(Vector2 wkp)
+    {
+        enabled = true;
+        position = transform.position;
+        num = 1;
+        walkpos = wkp;
+        Pathfinder pathfinder = Camera.main.GetComponent<Pathfinder>();
+        //path = Camera.main.GetComponent<DragSelect>().path;
+        path = pathfinder.FindPath(position, walkpos);
+        j = 0;
+        walkAttack = false;
+    }
+
 
     void Avoid()
         {
@@ -93,7 +108,7 @@ public class UnitMovement : MonoBehaviour
                 if (gameObject.layer != collider.gameObject.layer)
                 {
 
-                    direction = (direction + size * direc / dist).normalized;
+                    direction = (direction + size * direc / (dist*dist)).normalized;
                     Debug.DrawRay(position, direc, Color.yellow);
                     Debug.DrawRay(position, direction, Color.red);
                 }

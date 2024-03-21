@@ -4841,3 +4841,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b507d5572dfe8af4394706f46deac98e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitPrefab: {fileID: 0}
+  damage: 0
+  target: {fileID: 0}

@@ -189,7 +189,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turnSpeed: 0.1
   walkpos: {x: 0, y: 0}
-  speed: 0.03
+  speed: 0.05
   size: 3
   path: []
   j: 0

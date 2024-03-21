@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7842091046659634793}
   - component: {fileID: 4345014803787830387}
   - component: {fileID: -6727159613324096746}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Building
   m_TagString: Ally
   m_Icon: {fileID: 0}
@@ -154,9 +154,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 945866903253192976}
     m_Modifications:
+    - target: {fileID: 3294499185524204000, guid: e16695cd8870d4043b69125adb66d8e2, type: 3}
+      propertyPath: focusOn
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3294499185524204000, guid: e16695cd8870d4043b69125adb66d8e2, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6322102806179517180, guid: e16695cd8870d4043b69125adb66d8e2, type: 3}
       propertyPath: m_Name
       value: HeavyCannon
+      objectReference: {fileID: 0}
+    - target: {fileID: 6322102806179517180, guid: e16695cd8870d4043b69125adb66d8e2, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6844998441069888921, guid: e16695cd8870d4043b69125adb66d8e2, type: 3}
       propertyPath: m_RootOrder
@@ -201,6 +213,10 @@ PrefabInstance:
     - target: {fileID: 6844998441069888921, guid: e16695cd8870d4043b69125adb66d8e2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7468470521617920317, guid: e16695cd8870d4043b69125adb66d8e2, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

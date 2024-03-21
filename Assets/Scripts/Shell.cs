@@ -5,25 +5,27 @@ using UnityEngine;
 public class Shell : MonoBehaviour
 {
     public float distanceToDetonate;
-    Vector2 Fposition;
-    // Start is called before the first frame update
+    public float actualdistance;
+    public Vector2 Fposition;
+    Bomb bomb;
+
     void Start()
     {
+        bomb = GetComponent<Bomb>();
         Fposition = transform.position;
+        distanceToDetonate = Vector2.Distance(Fposition, GetComponent<BulletDie>().target.transform.position);
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(Vector2.Distance(Fposition, transform.position) >= distanceToDetonate)
+        actualdistance = Vector2.Distance(Fposition, transform.position);
+        if (actualdistance >= distanceToDetonate)
         {
-            //Explode();
+            bomb.Explode();
+            gameObject.GetComponent<BulletDie>().Die();
         }
     }
-    public Shell(float _distance) 
-    {
-        distanceToDetonate = _distance;
-    }
-    
+
 
 }

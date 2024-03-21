@@ -4,21 +4,31 @@ using UnityEngine;
 
 public class Turret : MonoBehaviour
 {
-    Health targethealth;
     public float timeBetweenShots;
-    public GameObject hitPrefab;
     private float nextTimeToShoot;
     public GameObject target;
     public float range;
     public int damage;
     public float rotationSpeed;
-    public float angle;
+    private float angle;
     public string focusOn;
     TargetFinder targetFinder;
-    public float distance;
+    private float distance;
     public GameObject turretNose;
+    private ParticleSystem shootParticle;
+    public GameObject bulletPrefab;
+    Vector2 direction;
+    public float bulletSpeed;
+    public float spread;
+    public int burst;
     private void Start()
     {
+        if (burst == 0)
+        {
+            burst = 1;
+        }
+
+        shootParticle = GetComponent<ParticleSystem>();
         turretNose = transform.GetChild(0).gameObject;
         gameObject.tag = transform.parent.tag;
         nextTimeToShoot = Time.time;
@@ -29,11 +39,10 @@ public class Turret : MonoBehaviour
 
     private void FixedUpdate()
     {
-
         if (target != null)
         {
             distance = Vector2.Distance(target.transform.position, transform.position);
-            if (Vector2.Distance(target.transform.position, transform.position) <= range)
+            if (distance <= range)
             {
                 Aim();
                 if (transform.rotation == Quaternion.Euler(0, 0, angle) && Time.time >= nextTimeToShoot)
@@ -50,23 +59,35 @@ public class Turret : MonoBehaviour
 
     private void Aim()
     {
-        Vector2 direction = target.transform.position - transform.position;
+        direction = target.transform.position - transform.position;
         angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle),rotationSpeed);
     }
     private void Shoot()
     {
+        for(int k=0; k < burst; k++)
+        {
+            Vector2 dir;
+            shootParticle.Play();
+            //Debug.DrawRay(transform.position, target.transform.position - transform.position, Color.red, .3f);
+            GameObject bullet = Instantiate(bulletPrefab, turretNose.transform.position, Quaternion.Euler(0, 0, angle + 90));
+            Rigidbody2D bulletrb = bullet.GetComponent<Rigidbody2D>();
+            Debug.DrawRay(transform.position, direction, Color.green,.5f);
+            dir = Quaternion.Euler(0, 0, Random.Range(spread / 2, -spread / 2)) * direction;
+            Debug.DrawRay(transform.position, dir, Color.red,.5f);
 
-        Debug.DrawRay(transform.position, target.transform.position - transform.position, Color.red, .3f);
-        //Instantiate(bulletPrefab,)
-        Instantiate(hitPrefab,target.transform.position- new Vector3(Random.Range(-.3f, .3f), Random.Range(-.3f, .3f), 2), target.transform.rotation);
-        targethealth = target.GetComponent<Health>();
-        targethealth.health = targethealth.health - damage;
-        
-        
-        nextTimeToShoot = Time.time + timeBetweenShots;
+
+            bulletrb.AddForce(dir.normalized * bulletSpeed, ForceMode2D.Impulse);
+
+            bullet.tag = tag;
+            BulletDie bulletdie = bullet.GetComponent<BulletDie>();
+            bulletdie.damage = damage;
+            bulletdie.target = target;
+            nextTimeToShoot = Time.time + timeBetweenShots;
+
+
+        }
     }
-    
    
 
 }

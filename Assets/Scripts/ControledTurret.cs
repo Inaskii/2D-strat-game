@@ -5,43 +5,48 @@ using UnityEngine;
 public class ControledTurret : MonoBehaviour
 {
 
-    Health targethealth;
     public float timeBetweenShots;
-    public GameObject hitPrefab;
     private float nextTimeToShoot;
+    public GameObject target;
     public float range;
     public int damage;
-    public int Adamage;
-    public bool areaDamage;
-    public float radius;
-    public float roationSpeed;
+    public float rotationSpeed;
     public float angle;
     public string focusOn;
+    TargetFinder targetFinder;
     public float distance;
-    public GameObject mark;
+    public GameObject turretNose;
+    public ParticleSystem shootParticle;
+    public GameObject bulletPrefab;
+    Vector2 direction;
+    public int x;
     public Vector2 mousePos;
     public Vector3 mouse3Pos;
-    GameObject target;
+
     private void Start()
     {
+
+        shootParticle = GetComponent<ParticleSystem>();
+        turretNose = transform.GetChild(0).gameObject;
+        gameObject.tag = transform.parent.tag;
         nextTimeToShoot = Time.time;
+        targetFinder = gameObject.AddComponent<TargetFinder>();
+        targetFinder.range = range;
+        targetFinder.focusOn = focusOn;
     }
 
-    private void FixedUpdate()
+
+    private void Update()
     {
         Aim();
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouse3Pos = new Vector3(mousePos.x,mousePos.y,0);
         Vector2 mouseDir = mouse3Pos - transform.position;
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && Time.time >= nextTimeToShoot)
         {
-            Debug.DrawRay(transform.position, mouseDir);
-            if (Physics2D.Raycast(transform.position, mouseDir, 10).collider.gameObject)
-            {
-                target = Physics2D.Raycast(transform.position, mouseDir, 10).collider.gameObject;
-                Shoot();
-            }
+            Shoot();
+            
         }
 
     }
@@ -49,31 +54,22 @@ public class ControledTurret : MonoBehaviour
 
     private void Aim()
     {
-        Vector2 direction = mouse3Pos - transform.position;
+        direction = mouse3Pos - transform.position;
         angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle), roationSpeed);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle), rotationSpeed);
     }
     private void Shoot()
     {
-       
+        shootParticle.Play();
+        GameObject bullet = Instantiate(bulletPrefab, turretNose.transform.position, Quaternion.Euler(0, 0, angle + 90));
+        Rigidbody2D bulletrb = bullet.GetComponent<Rigidbody2D>();
+        bulletrb.AddForce(direction.normalized * 15, ForceMode2D.Impulse);
+        bullet.tag = tag;
+        bullet.GetComponent<BulletDie>().damage = damage;
 
-        Debug.DrawRay(transform.position, target.transform.position - transform.position, Color.red, .3f);
-        Instantiate(hitPrefab, target.transform.position - new Vector3(Random.Range(-.3f, .3f), Random.Range(-.3f, .3f), 2), target.transform.rotation);
-        targethealth = target.GetComponent<Health>();
-        targethealth.health =- damage;
-        if (areaDamage == true)
-        {
-            foreach (Collider2D collider in Physics2D.OverlapCircleAll(target.transform.position, radius))
-            {
-                if (collider.gameObject.tag != gameObject.tag)
-                {
-                    targethealth = collider.GetComponent<Health>();
-                    targethealth.health = targethealth.health - Adamage;
-                    Instantiate(hitPrefab, collider.transform.position - new Vector3(Random.Range(-.3f, .3f), Random.Range(-.3f, .3f), 2), collider.transform.rotation);
 
-                }
-            }
-        }
+
+
 
         nextTimeToShoot = Time.time + timeBetweenShots;
     }

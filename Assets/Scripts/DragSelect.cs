@@ -16,6 +16,7 @@ public class DragSelect : MonoBehaviour
     public List<Vector2> path;
     public bool walkAttack;
     public GameObject particle;
+    public LayerMask layerMask;
     // first mouse click position, second mouse click position
     void Start()
     {
@@ -55,11 +56,12 @@ public class DragSelect : MonoBehaviour
             {
                 Destroy(particle);
             }
+            particles = new List<GameObject>();
             square.SetActive(false);
             n = 0;
             SP = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             //   Debug.Log(SP);
-            units =  Physics2D.OverlapAreaAll(FP,SP);
+            units =  Physics2D.OverlapAreaAll(FP,SP,layerMask);
             selected = new List<GameObject>();
                 foreach (Collider2D collider2D in units)
                 {

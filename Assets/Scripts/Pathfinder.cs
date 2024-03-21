@@ -8,9 +8,11 @@ public class Pathfinder : MonoBehaviour
     public List<node> closed = new List<node>();
     public List<Vector2> _closed = new List<Vector2>();
     public List<Vector2> _open = new List<Vector2>();
-    
     public List<Vector2> path = new List<Vector2>();
     node[] neighbour = new node[8];
+    public LayerMask layerMask;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -67,7 +69,7 @@ public class Pathfinder : MonoBehaviour
             //pega os vizinho do current
             foreach (node vector in neighbour)
             {
-                if (Physics2D.OverlapCircle(vector.pos,.4f,LayerMask.NameToLayer("Unit")) || _closed.Contains(vector.pos))
+                if (Physics2D.OverlapCircle(vector.pos,.4f,layerMask) || _closed.Contains(vector.pos))
                 {
                     //Debug.Log("continue");
                     continue;
