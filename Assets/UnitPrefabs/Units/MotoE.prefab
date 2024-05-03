@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4578734325886898834}
   - component: {fileID: 5308551761669917036}
   - component: {fileID: 1307094041}
+  - component: {fileID: -4100656045054480205}
   m_Layer: 3
   m_Name: MotoE
   m_TagString: Enemy
@@ -173,8 +174,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ef4aebf046b8314cb4b09ae2a8011c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 5
-  Maxhealth: 5
+  health: 50
+  Maxhealth: 100
 --- !u!114 &5308551761669917036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6739150607989b043b460596c7d4c42c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnSpeed: 0.2
+  turnSpeed: 0.4
   walkpos: {x: 0, y: 0}
   speed: 0.1
   size: 0
@@ -210,7 +211,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetC: []
   target: {fileID: 0}
-  range: 10
-  damage: 5
+  range: 15
+  damage: 50
   timeBetweenShots: 1
   focusOn: Ally
+--- !u!114 &-4100656045054480205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403235910598918344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b507d5572dfe8af4394706f46deac98e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitPrefab: {fileID: 3235736644746086993, guid: e5a1a5f7327014c40b5f8ae669e35425, type: 3}
+  damage: 15
+  target: {fileID: 0}
+  die: 1
+  dieTime: 15

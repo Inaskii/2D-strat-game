@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2988693256723189406}
   - component: {fileID: 1586739163412749951}
   - component: {fileID: 6643087713850141618}
-  - component: {fileID: 8944336659824318992}
   - component: {fileID: 5428681790306987696}
+  - component: {fileID: -301759075618039873}
   m_Layer: 6
   m_Name: BulletPrefab
   m_TagString: Untagged
@@ -114,8 +114,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &8944336659824318992
-CircleCollider2D:
+--- !u!114 &5428681790306987696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6155516556587111750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b507d5572dfe8af4394706f46deac98e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitPrefab: {fileID: 7564830283720841191, guid: 252806a2622f689419227e79293c87ed, type: 3}
+  damage: 1
+  target: {fileID: 0}
+  die: 1
+  dieTime: 1
+--- !u!70 &-301759075618039873
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -146,20 +163,6 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.03
---- !u!114 &5428681790306987696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6155516556587111750}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b507d5572dfe8af4394706f46deac98e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitPrefab: {fileID: 7564830283720841191, guid: 252806a2622f689419227e79293c87ed, type: 3}
-  damage: 1
+  m_Offset: {x: -0.1, y: 0}
+  m_Size: {x: 0.5, y: 0.1}
+  m_Direction: 1

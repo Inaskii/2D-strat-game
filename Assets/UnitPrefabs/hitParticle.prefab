@@ -4844,3 +4844,5 @@ MonoBehaviour:
   hitPrefab: {fileID: 0}
   damage: 0
   target: {fileID: 0}
+  die: 1
+  dieTime: 1

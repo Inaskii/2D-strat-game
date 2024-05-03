@@ -10,12 +10,10 @@ public class DragSelect : MonoBehaviour
     public Collider2D[] units;
     public int n = 0;
     public List<GameObject> selected;
-    public List<GameObject> particles;
     public GameObject square;
     Vector2 SQ;
     public List<Vector2> path;
     public bool walkAttack;
-    public GameObject particle;
     public LayerMask layerMask;
     // first mouse click position, second mouse click position
     void Start()
@@ -52,11 +50,6 @@ public class DragSelect : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
-            foreach(GameObject particle in particles)
-            {
-                Destroy(particle);
-            }
-            particles = new List<GameObject>();
             square.SetActive(false);
             n = 0;
             SP = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -72,7 +65,6 @@ public class DragSelect : MonoBehaviour
                         selected.Add(collider2D.gameObject);
                         //Debug.Log(selected[n].name);
                         n++;
-                        particles.Add(Instantiate(particle,collider2D.gameObject.transform));
                         
 
 

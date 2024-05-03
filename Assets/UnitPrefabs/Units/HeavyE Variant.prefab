@@ -10,7 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1217737502987060389, guid: f7144780ca357504ea9924b11e0e0779, type: 3}
       propertyPath: m_Name
-      value: HeavyE
+      value: HeavyE Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 1217737502987060389, guid: f7144780ca357504ea9924b11e0e0779, type: 3}
+      propertyPath: m_TagString
+      value: Ally
       objectReference: {fileID: 0}
     - target: {fileID: 1217737502987060392, guid: f7144780ca357504ea9924b11e0e0779, type: 3}
       propertyPath: m_RootOrder

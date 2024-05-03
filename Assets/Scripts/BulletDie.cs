@@ -7,10 +7,15 @@ public class BulletDie : MonoBehaviour
     public ParticleSystem hitPrefab;
     public int damage;
     public GameObject target;
+    public bool die;
+    public float dieTime;
+
     void Start()
     {
-        Destroy(gameObject, 1);
-        
+        if (die)
+        {
+            Destroy(gameObject, dieTime);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

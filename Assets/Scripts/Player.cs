@@ -7,12 +7,13 @@ public class Player : MonoBehaviour
 {
     public TextMeshProUGUI coinText;
     public int coin;
-    public GameObject mainBuilding;
-    private Inventory mainInv;
+    GameObject mainBuilding;
+    Inventory mainInv;
 
     void Start()
     {
         coin = 0;
+        mainBuilding = GameObject.FindObjectOfType<Nest>().gameObject;
         mainInv = mainBuilding.GetComponent<Inventory>();
     }
 

@@ -11,10 +11,11 @@ GameObject:
   - component: {fileID: 403235910598918341}
   - component: {fileID: 403235910598918342}
   - component: {fileID: 403235910598918343}
-  - component: {fileID: 5691661203005439305}
   - component: {fileID: 4578734325886898834}
   - component: {fileID: 5308551761669917036}
   - component: {fileID: 37730596728527507}
+  - component: {fileID: -3723387526201678238}
+  - component: {fileID: -5154734854032556496}
   m_Layer: 3
   m_Name: Moto
   m_TagString: Ally
@@ -35,7 +36,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &403235910598918342
 SpriteRenderer:
@@ -116,8 +117,74 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &5691661203005439305
-BoxCollider2D:
+--- !u!114 &4578734325886898834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403235910598918344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ef4aebf046b8314cb4b09ae2a8011c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  Maxhealth: 100
+--- !u!114 &5308551761669917036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403235910598918344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6739150607989b043b460596c7d4c42c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnSpeed: 1
+  walkpos: {x: 0, y: 0}
+  speed: 0.3
+  size: 1
+  path: []
+  j: 0
+  avoid: 0
+  walkAttack: 0
+  turret: {fileID: 0}
+--- !u!114 &37730596728527507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403235910598918344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 106906d51f87d874bbbfc6952084ce8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  order: 1
+  state: 
+  target: {fileID: 0}
+  collectRange: 2
+  inventory: {fileID: 0}
+  maxInv: 1
+  container: {fileID: 0}
+  closestResource: {fileID: 0}
+  collectTime: 5
+  nextTimetoCollect: 0
+  player: {fileID: 0}
+  jobs: []
+  job:
+    building: {fileID: 0}
+    workers: []
+  actualBuilding: {fileID: 0}
+  nextItem:
+    itemname: 
+    amount: 0
+--- !u!58 &-3723387526201678238
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -149,19 +216,9 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.64, y: 0.64}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.4}
-  m_EdgeRadius: 0
---- !u!114 &4578734325886898834
+  m_Radius: 0.1
+--- !u!114 &-5154734854032556496
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -170,48 +227,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 403235910598918344}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ef4aebf046b8314cb4b09ae2a8011c8, type: 3}
+  m_Script: {fileID: 11500000, guid: 8faad58f89f4a534fa2f86d3415e735a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  Maxhealth: 100
---- !u!114 &5308551761669917036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403235910598918344}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6739150607989b043b460596c7d4c42c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  turnSpeed: 0.2
-  walkpos: {x: 0, y: 0}
-  speed: 0.1
-  size: 1
-  path: []
-  j: 0
-  avoid: 0
-  walkAttack: 0
-  turret: {fileID: 0}
---- !u!114 &37730596728527507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403235910598918344}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 106906d51f87d874bbbfc6952084ce8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  order: 1
-  state: 
-  target: {fileID: 0}
-  collectRange: 2
-  inventory: {fileID: 0}
-  maxInv: 1
-  container: {fileID: 0}
+  price:
+  - itemname: food
+    amount: 5
+  trainTime: 1
+  unitPrefab: {fileID: 403235910598918344}
+  Pop: 0

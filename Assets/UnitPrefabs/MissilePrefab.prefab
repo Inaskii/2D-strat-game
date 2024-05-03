@@ -4995,6 +4995,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 6758158201250134759, guid: 9ccd8e9960722344ca571426f3cf951e, type: 3}
   damage: 1
   target: {fileID: 0}
+  die: 1
+  dieTime: 1
 --- !u!114 &3428467370107942422
 MonoBehaviour:
   m_ObjectHideFlags: 0

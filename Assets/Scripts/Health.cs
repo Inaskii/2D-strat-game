@@ -18,7 +18,12 @@ public class Health : MonoBehaviour
     {
         if (health <= 0)
         {
-            Destroy(me);
+            die();
         }
+    }
+    public void die()
+    {
+        Destroy(me);
+
     }
 }

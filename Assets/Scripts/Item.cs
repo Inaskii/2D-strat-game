@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item
+[System.Serializable]
+
+public struct Item
 {
     public string itemname;
     public int amount;

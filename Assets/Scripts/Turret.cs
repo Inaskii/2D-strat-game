@@ -11,16 +11,18 @@ public class Turret : MonoBehaviour
     public int damage;
     public float rotationSpeed;
     private float angle;
-    public string focusOn;
+    private string focusOn;
     TargetFinder targetFinder;
     private float distance;
-    public GameObject turretNose;
-    private ParticleSystem shootParticle;
+    public List<Nose> turretNoses = new List<Nose>();
     public GameObject bulletPrefab;
     Vector2 direction;
     public float bulletSpeed;
     public float spread;
     public int burst;
+    private int noseCount;
+    private int actualNose;
+    
     private void Start()
     {
         if (burst == 0)
@@ -28,9 +30,41 @@ public class Turret : MonoBehaviour
             burst = 1;
         }
 
-        shootParticle = GetComponent<ParticleSystem>();
-        turretNose = transform.GetChild(0).gameObject;
-        gameObject.tag = transform.parent.tag;
+        noseCount = transform.childCount;
+        for(int i=0;i<noseCount;i++)
+        {
+            GameObject child = transform.GetChild(i).gameObject;
+            Nose nose = new Nose(child,child.GetComponent<ParticleSystem>());
+            turretNoses.Add(nose);
+        }
+
+
+
+        if (transform.parent != null)
+        {
+            gameObject.tag = transform.parent.tag;
+            if (gameObject.tag == "Ally")
+            {
+                focusOn = "Enemy";
+            }
+            else
+            {
+                focusOn = "Ally";
+            }
+        }
+        else
+        {
+            
+            if (gameObject.tag == "Ally")
+            {
+                focusOn = "Enemy";
+            }
+            else
+            {
+                focusOn = "Ally";
+            }
+
+        }
         nextTimeToShoot = Time.time;
         targetFinder = gameObject.AddComponent<TargetFinder>();
         targetFinder.range = range;
@@ -68,12 +102,12 @@ public class Turret : MonoBehaviour
         for(int k=0; k < burst; k++)
         {
             Vector2 dir;
-            shootParticle.Play();
+            turretNoses[actualNose].noseParticle.Play();
             //Debug.DrawRay(transform.position, target.transform.position - transform.position, Color.red, .3f);
-            GameObject bullet = Instantiate(bulletPrefab, turretNose.transform.position, Quaternion.Euler(0, 0, angle + 90));
+            GameObject bullet = Instantiate(bulletPrefab, turretNoses[actualNose].noseObject.transform.position, Quaternion.Euler(0, 0, angle + 90));
             Rigidbody2D bulletrb = bullet.GetComponent<Rigidbody2D>();
             Debug.DrawRay(transform.position, direction, Color.green,.5f);
-            dir = Quaternion.Euler(0, 0, Random.Range(spread / 2, -spread / 2)) * direction;
+            dir = Quaternion.Euler(0, 0, Random.Range(spread / 2, -spread / 2)) * turretNoses[actualNose].noseObject.transform.up ;
             Debug.DrawRay(transform.position, dir, Color.red,.5f);
 
 
@@ -85,9 +119,28 @@ public class Turret : MonoBehaviour
             bulletdie.target = target;
             nextTimeToShoot = Time.time + timeBetweenShots;
 
+            actualNose += 1;
+            if (actualNose >= noseCount)
+            {
+                actualNose = 0;
+            }
 
         }
+        
+
     }
    
 
+}
+public class Nose
+{
+    public GameObject noseObject;
+    public ParticleSystem noseParticle;
+
+    public Nose(GameObject _noseObject, ParticleSystem _noseParticle)
+    {
+        noseObject = _noseObject;
+        noseParticle = _noseParticle;
+
+    }
 }

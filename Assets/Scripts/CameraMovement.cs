@@ -11,7 +11,7 @@ public class CameraMovement : MonoBehaviour
     public bool w = false;
     public bool s = false;
     public bool d = false;
-    
+    public float speed;
     
     // Start is called before the first frame update
     void Start()
@@ -31,20 +31,20 @@ public class CameraMovement : MonoBehaviour
 
         if (a == true)
         {
-            x--;
+            x-=speed*Camera.main.orthographicSize;
         }
         if (d == true)
         {
-            x++;
+            x+=speed*Camera.main.orthographicSize;
         }
         if (w == true)
         {
-            y++;
+            y+=speed*Camera.main.orthographicSize;
 
         }
         if (s == true)
         {
-            y--;
+            y-=speed*Camera.main.orthographicSize;
 
         }
         transform.position = new Vector3 (x/10,y/10,z);

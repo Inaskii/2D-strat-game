@@ -59,7 +59,7 @@ public class UnitMovement : MonoBehaviour
         rotquat = Quaternion.Euler(0, 0, rotation);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotquat, turnSpeed);
         
-        if (Vector2.Distance(path[j], position) > 1)
+        if (Vector2.Distance(path[j], position) > Mathf.Sqrt(num)/5)
         {
             transform.position = transform.position + transform.up * speed;
         }
@@ -79,6 +79,11 @@ public class UnitMovement : MonoBehaviour
         Pathfinder pathfinder = Camera.main.GetComponent<Pathfinder>();
         //path = Camera.main.GetComponent<DragSelect>().path;
         path = pathfinder.FindPath(position, walkpos);
+        if(path == null)
+        {
+            enabled = false;
+            return;
+        }
         j = 0;
         walkAttack = walkAttack_;
     }
@@ -92,10 +97,24 @@ public class UnitMovement : MonoBehaviour
         Pathfinder pathfinder = Camera.main.GetComponent<Pathfinder>();
         //path = Camera.main.GetComponent<DragSelect>().path;
         path = pathfinder.FindPath(position, walkpos);
+        if(path == null)
+        {
+            enabled = false;
+            return;
+        }
         j = 0;
         walkAttack = false;
     }
+    public void FollowPath(List<Vector2> _path)
+    {
+        enabled = true;
+        num = 1;
+        path = _path;
 
+        j = 0;
+        walkAttack = false;
+
+    }
 
     void Avoid()
         {

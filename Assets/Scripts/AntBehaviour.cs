@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,27 +11,46 @@ public class AntBehaviour : MonoBehaviour
     public float collectRange;
     public Inventory inventory;
     public int maxInv;
-    public GameObject container;
-    public GameObject closestResource;
-    //STATES: 1 = doing, 0 = done
+    private GameObject nestObject;
+    public Nest nest;
+    public float collectTime;
+    public float nextTimetoCollect;
+    public GameObject player;
+    public Job job;
+    public Building actualBuilding;
+    public Item nextItem;
+    public string jobtype;
     void Start()
     {
+        nest = GameObject.FindObjectOfType<Nest>();
+        nestObject = nest.gameObject;
         state = "idle";
-        //idle
         movement = GetComponent<UnitMovement>();
         target = null;
         inventory = gameObject.AddComponent<Inventory>();
+        nextTimetoCollect = 0;
+        player = Camera.main.gameObject;
+        jobtype = null;
+        
     }
 
     void Update()
     {
-      
-        if (state == "idle")
+        if (job != null)
         {
-            if (order == 1)
+            if (job.target != null)
             {
-                Collect("food");
-                return;
+                jobtype = job.type;
+                if (job.type == "collect")
+                {
+                    Collect();
+                    return;
+                }
+                if (job.type == "build")
+                {
+                    Build();
+                    return;
+                }
             }
         }
         if (state == "walking")
@@ -39,61 +58,83 @@ public class AntBehaviour : MonoBehaviour
             Walk();
             return;
         }
-
-
-        
-    }
-    void Collect(resource resource)
-    {
-        if (resource == null)
+        if(state == "collecting")
         {
+            Collect();
+            return;
+        }
+        if(job==null)
+        {
+            target = nestObject;
+            //if not walk, ou seja, entra no if se ele ja tiver chegado
+            if (!Walk())
+            {
+                job = nest.GetJob(jobtype);
+                
+            }
+
+            return;
+        }
+        if (job.target==null)
+        {
+            target = nestObject;
+            //if not walk, ou seja, entra no if se ele ja tiver chegado
+            if (!Walk())
+            {
+                job = nest.GetJob(jobtype);
+            }
 
         }
 
-        movement.Walkto(resource.transform.position, 0, false);
-
 
     }
-    void Collect(string resourcename)
+    void Collect()
     {
+
+        string resourcename = job.target.GetComponent<Resource>().resourcename;
         if (inventory.itemindex(resourcename) != -1)
         {
             if (inventory.items[inventory.itemindex(resourcename)].amount >= maxInv)
             {
-                target = container;
+                target = nestObject;
                 if (Vector2.Distance(transform.position, target.transform.position) < collectRange)
                 {
-                    inventory.empty(container);
+                    inventory.empty(nestObject);
                 }
                 Walk();
                 return;
             }
         }
-        if(closestResource == null)
-        {
-            TargetClosestResource(resourcename);
-        }
-        else if (closestResource.GetComponent<resource>().resourcename != resourcename)
-        {
-            TargetClosestResource(resourcename);
-        }
-        else 
-        {
-            target = closestResource;
-        }
 
+        target = job.target;
 
-        Walk();
 
         if (Vector2.Distance(transform.position, target.transform.position) < collectRange)
         {
-            Item item = new Item(resourcename, 1);
-            inventory.Add(item);
+            if (state == "collecting")
+            {
+                if (Time.time >= nextTimetoCollect)
+                {
+                    inventory.Add(resourcename, 1);
+                    state = "idle";
+                }
 
+                return;
+            }
+
+            nextTimetoCollect = Time.time + collectTime;
+            state = "collecting";
+            
+
+        }
+        else
+        {
+            Walk();
         }
 
 
     }
+    /*
     void TargetClosestResource(string resourcename) 
     {
 
@@ -121,11 +162,19 @@ public class AntBehaviour : MonoBehaviour
         target = chosen;
 
     }
+    */
     bool Walk()
     {
+        if(target==null)
+        {
+            state = "idle";
+            return false;
+         
+        }
         if(Vector2.Distance(transform.position,target.transform.position) < collectRange)
         {
             state = "idle";
+            movement.enabled = false;
            // print("1");
             return false;
         }
@@ -142,12 +191,69 @@ public class AntBehaviour : MonoBehaviour
 
         
     }
-    void Deliver()
-    {
-
-    }
     void Build()
     {
+
+        if (target == nestObject)
+        {
+            if (Walk() == false)
+            {
+                inventory.get(nextItem.itemname, nestObject);
+            }
+        }
+
+        actualBuilding = job.target.GetComponent<Building>();
+
+        foreach (Item item in nestObject.GetComponent<Inventory>().items)
+        {
+            if (actualBuilding.cost[0].itemname == item.itemname && actualBuilding.cost[0].amount > 0)
+            {
+                nextItem = item;
+         
+                if(nextItem.amount > maxInv)
+                {
+                    nextItem.amount = maxInv;
+                }
+                target = nestObject;
+                Walk();
+            }
+        }
+        foreach(Item item in inventory.items)
+        {
+            if(item.itemname==nextItem.itemname || item.amount >= nextItem.amount)
+            {
+                target = job.target;
+                Walk();
+            }
+            
+        }
+
+        if (Vector2.Distance(transform.position, target.transform.position) < collectRange)
+        {
+            inventory.empty(target);
+        }
+
+        /*se recursos forem o suficiente:construir
+        nova classe: em construção
+            contém inventário
+        find object of type
+        criar fila em player com construções para serem construidas
+        novo struct: buildJob
+        tem um gameobjet(contrução a ser construida) e uma lista de quem vai construir e lista de materiais
+        construtoras vão se organizar para construir, levando os recursos na quantidade certa
+        como?
+        foreach(item in lista de materiais)
+        {
+            for i in item.ammount
+        {
+
+        }
+
+        }
+
+
+
+         */
 
     }
 

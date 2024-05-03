@@ -166,6 +166,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 6758158201250134759, guid: 9ccd8e9960722344ca571426f3cf951e, type: 3}
   damage: 1
   target: {fileID: 0}
+  die: 1
+  dieTime: 1
 --- !u!114 &-7251226452052202327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +193,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67ad8a5f3c3217a41b7df797f3c66103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  distanceToDetonate: 0
+  actualdistance: 0
+  Fposition: {x: 0, y: 0}
