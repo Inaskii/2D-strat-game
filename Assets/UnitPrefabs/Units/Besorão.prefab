@@ -9870,7 +9870,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 10000
-  Maxhealth: 10000
+  Maxhealth: 2000
 --- !u!114 &2162181007270498321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9904,13 +9904,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cabce782c88da1540a2b324be4a05bfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBetweenShots: 1
+  timeBetweenShots: 3
   target: {fileID: 0}
   range: 10
   damage: 50
   rotationSpeed: 2
   bulletPrefab: {fileID: 8265658394510177749, guid: 1ac99f1cab4833146a8ecbaec9cee2fa, type: 3}
-  bulletSpeed: 15
+  bulletSpeed: 30
   spread: 1
   burst: 1
 --- !u!114 &7066476891957324076

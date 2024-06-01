@@ -109,7 +109,7 @@ public class AntBehaviour : MonoBehaviour
         target = job.target;
 
 
-        if (Vector2.Distance(transform.position, target.transform.position) < collectRange)
+        if (Vector2.Distance(transform.position, target.transform.position) <= collectRange)
         {
             if (state == "collecting")
             {
@@ -171,7 +171,7 @@ public class AntBehaviour : MonoBehaviour
             return false;
          
         }
-        if(Vector2.Distance(transform.position,target.transform.position) < collectRange)
+        if(Vector2.Distance(transform.position,target.transform.position) <= collectRange)
         {
             state = "idle";
             movement.enabled = false;
@@ -194,18 +194,33 @@ public class AntBehaviour : MonoBehaviour
     void Build()
     {
 
-        if (target == nestObject)
-        {
-            if (Walk() == false)
-            {
-                inventory.get(nextItem.itemname, nestObject);
-            }
-        }
 
         actualBuilding = job.target.GetComponent<Building>();
+        
+        foreach (Item item in inventory.items)
+        {
+            if (item.itemname == nextItem.itemname || item.amount >= nextItem.amount)
+            {
+                target = job.target;
+                print("walktobuilding");
+                Walk();
+                if (Vector2.Distance(transform.position, job.target.transform.position) <= collectRange)
+                {
+                    inventory.empty(job.target);
+                    print("deliver");
+                }
+                return;
+
+
+            }
+
+        }
+
+
 
         foreach (Item item in nestObject.GetComponent<Inventory>().items)
         {
+            
             if (actualBuilding.cost[0].itemname == item.itemname && actualBuilding.cost[0].amount > 0)
             {
                 nextItem = item;
@@ -215,23 +230,22 @@ public class AntBehaviour : MonoBehaviour
                     nextItem.amount = maxInv;
                 }
                 target = nestObject;
+                print("gotonest");
                 Walk();
+                
+
             }
         }
-        foreach(Item item in inventory.items)
+        if (target == nestObject)
         {
-            if(item.itemname==nextItem.itemname || item.amount >= nextItem.amount)
+            if (Vector2.Distance(nest.transform.position, gameObject.transform.position) <= collectRange)
             {
-                target = job.target;
-                Walk();
+                inventory.get(nextItem.itemname, nestObject);
+                print("getitem");
+                return;
             }
-            
         }
 
-        if (Vector2.Distance(transform.position, target.transform.position) < collectRange)
-        {
-            inventory.empty(target);
-        }
 
         /*se recursos forem o suficiente:construir
         nova classe: em construção

@@ -12,7 +12,7 @@ public class Pathfinder : MonoBehaviour
     public node current;
     node[] neighbour = new node[8];
     public LayerMask layerMask;
-    int i;
+    float i;
     public List<Path> paths = new List<Path>();
 
     // Start is called before the first frame update
@@ -29,7 +29,7 @@ public class Pathfinder : MonoBehaviour
     public List<Vector2> FindPath(Vector2 from, Vector2 to)
     {
 
-        while(Physics2D.OverlapPoint(to,layerMask))
+        while (Physics2D.OverlapPoint(to, layerMask))
         {
             Vector2 direction = (from - to).normalized;
             to = to - direction;
@@ -66,34 +66,41 @@ public class Pathfinder : MonoBehaviour
         _open.Add(current.pos);
         for (int k = 0; k < 3000; k++)
         {
-          //  Debug.DrawLine(from, current.pos, Color.white, 1);
+            //  Debug.DrawLine(from, current.pos, Color.white, 1);
             current = open[0];
             foreach (node VT in open)
             {
 
-                if (Vector2.Distance(current.pos, to) > Vector2.Distance(VT.pos, to))
+                if ( ( current.gcost + current.Calchcost(to) ) > ( VT.gcost + VT.Calchcost(to) ) )
                 {
                     current = VT;
                 }
-
+                
                 // pega menor f cost
             }
+            i = current.gcost + current.Calchcost(to);
+            print(i);
+
+
+
+
             open.Remove(current);
             _open.Remove(current.pos);
 
             closed.Add(current);
             _closed.Add(current.pos);
-            if (current.pos == to)
+            if (Vector2.Distance(current.pos, to) <= 2)
             {
+                current = new node(to, current);
                 RetracePath();
                 paths.Add(new Path(from, to, path));
                 return path;
             }
-            Cneighbour(current.pos,current);
+            Cneighbour(current.pos, current);
             //pega os vizinho do current
             foreach (node vector in neighbour)
             {
-                if (Physics2D.OverlapPoint(vector.pos,layerMask) || _closed.Contains(vector.pos))
+                if (Physics2D.OverlapPoint(vector.pos, layerMask) || _closed.Contains(vector.pos))
                 {
                     //Debug.Log("continue");
                     continue;
@@ -112,12 +119,11 @@ public class Pathfinder : MonoBehaviour
             }
 
         }
-        
+
         float currentDist = Mathf.Infinity;
-        foreach(node node in closed)
+        foreach (node node in closed)
         {
             float dist = Vector2.Distance(to, node.pos);
-            print(dist);
             if (dist < currentDist)
             {
                 currentDist = dist;
@@ -126,19 +132,19 @@ public class Pathfinder : MonoBehaviour
 
             }
             print(currentDist);
-            
+
         }
         RetracePath();
-        
+
 
 
         void RetracePath()
         {
 
-            while(current.pos != from)
+            while (current.pos != from)
             {
-                
-                Debug.DrawLine(current.pos, current.parent.pos,Color.black,1);
+
+                Debug.DrawLine(current.pos, current.parent.pos, Color.black, 1);
                 path.Add(current.pos);
                 current = current.parent;
             }
@@ -151,9 +157,9 @@ public class Pathfinder : MonoBehaviour
     }
     bool checkpath(List<Vector2> path)
     {
-        foreach(Vector2 vector in path)
+        foreach (Vector2 vector in path)
         {
-            if(Physics2D.OverlapPoint(vector, layerMask))
+            if (Physics2D.OverlapPoint(vector, layerMask))
             {
                 return false;
             }
@@ -163,27 +169,30 @@ public class Pathfinder : MonoBehaviour
         return true;
     }
 
+    void Cneighbour(Vector2 vector, node current)
+    {
+        neighbour[0] = new node((vector + new Vector2(0, 1)), current);
+        neighbour[1] = new node((vector + new Vector2(1, 1)), current);
+        neighbour[2] = new node((vector + new Vector2(1, 0)), current);
+        neighbour[3] = new node((vector + new Vector2(1, -1)), current);
+        neighbour[4] = new node((vector + new Vector2(0, -1)), current);
+        neighbour[5] = new node((vector + new Vector2(-1, -1)), current);
+        neighbour[6] = new node((vector + new Vector2(-1, 0)), current);
+        neighbour[7] = new node((vector + new Vector2(-1, 1)), current);
 
-
-    void Cneighbour(Vector2 vector,node current)
-        {
-            neighbour[0] = new node((vector + new Vector2(0, 1)),current);
-            neighbour[1] = new node((vector + new Vector2(1, 1)), current);
-            neighbour[2] = new node((vector + new Vector2(1, 0)), current);
-            neighbour[3] = new node((vector + new Vector2(1, -1)), current);
-            neighbour[4] = new node((vector + new Vector2(0, -1)), current);
-            neighbour[5] = new node((vector + new Vector2(-1, -1)), current);
-            neighbour[6] = new node((vector + new Vector2(-1, 0)), current);
-            neighbour[7] = new node((vector + new Vector2(-1, 1)), current);
         foreach (node V in neighbour)
-            {
-                Debug.DrawLine(vector, V.pos, Color.black, 1);
-            }
-        
+        {
+            Debug.DrawLine(vector, V.pos, Color.white, .4f);
         }
 
-
     }
+}
+        
+        
+
+
+    
+
 
 
 [System.Serializable]

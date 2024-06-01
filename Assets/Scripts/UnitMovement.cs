@@ -59,7 +59,7 @@ public class UnitMovement : MonoBehaviour
         rotquat = Quaternion.Euler(0, 0, rotation);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotquat, turnSpeed);
         
-        if (Vector2.Distance(path[j], position) > Mathf.Sqrt(num)/5)
+        if (Vector2.Distance(path[j], position) > Mathf.Sqrt(num)/4)
         {
             transform.position = transform.position + transform.up * speed;
         }

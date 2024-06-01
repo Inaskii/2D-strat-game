@@ -143,9 +143,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6739150607989b043b460596c7d4c42c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnSpeed: 1
+  turnSpeed: 0.4
   walkpos: {x: 0, y: 0}
-  speed: 0.3
+  speed: 0.06
   size: 1
   path: []
   j: 0
@@ -170,19 +170,20 @@ MonoBehaviour:
   collectRange: 2
   inventory: {fileID: 0}
   maxInv: 1
-  container: {fileID: 0}
-  closestResource: {fileID: 0}
-  collectTime: 5
+  nest: {fileID: 0}
+  collectTime: 2
   nextTimetoCollect: 0
   player: {fileID: 0}
-  jobs: []
   job:
-    building: {fileID: 0}
-    workers: []
+    path: []
+    target: {fileID: 0}
+    workerAmount: 0
+    type: 
   actualBuilding: {fileID: 0}
   nextItem:
     itemname: 
     amount: 0
+  jobtype: 
 --- !u!58 &-3723387526201678238
 CircleCollider2D:
   m_ObjectHideFlags: 0
