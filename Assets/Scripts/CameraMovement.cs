@@ -12,6 +12,7 @@ public class CameraMovement : MonoBehaviour
     public bool s = false;
     public bool d = false;
     public float speed;
+    float dt;
     
     // Start is called before the first frame update
     void Start()
@@ -22,7 +23,7 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        dt = Time.deltaTime;
 
         a = Input.GetKey("a");
         d = Input.GetKey("d");
@@ -31,20 +32,20 @@ public class CameraMovement : MonoBehaviour
 
         if (a == true)
         {
-            x-=speed*Camera.main.orthographicSize;
+            x-=speed*Camera.main.orthographicSize*dt;
         }
         if (d == true)
         {
-            x+=speed*Camera.main.orthographicSize;
+            x+=speed*Camera.main.orthographicSize*dt;
         }
         if (w == true)
         {
-            y+=speed*Camera.main.orthographicSize;
+            y+=speed*Camera.main.orthographicSize*dt;
 
         }
         if (s == true)
         {
-            y-=speed*Camera.main.orthographicSize;
+            y-=speed*Camera.main.orthographicSize*dt;
 
         }
         transform.position = new Vector3 (x/10,y/10,z);

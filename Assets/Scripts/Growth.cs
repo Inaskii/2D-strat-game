@@ -17,13 +17,13 @@ public class Growth : MonoBehaviour
     public GameObject sporePrefab;
     public List<GameObject> spores;
     public int SlowBubbleFactor;
-    int i;
+    //int i;
     public int maxSpore;
     public int maxMain;
     public int SpawnIndex;
     private void Start()
     {
-        i = 0;
+        //i = 0;
         spores.Add(gameObject);
         if(N==0)
         {
@@ -45,16 +45,16 @@ public class Growth : MonoBehaviour
     void UpdateN()
     {
         SpawnIndex = 0;
-        bool b = false;
+        //bool b = false;
         if(spores.Count==0)
         {
             enabled = false;
         }
         int n = Random.Range(0, spores.Count - 1);
-        b = false;
+        //b = false;
         if (spores[n] == null)
         {
-            b = true;
+            //b = true;
             spores.Remove(spores[n]);
             return;
         }

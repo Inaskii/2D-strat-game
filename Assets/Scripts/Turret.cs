@@ -5,7 +5,7 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     public float timeBetweenShots;
-    private float nextTimeToShoot;
+    public bool canShoot;
     public GameObject target;
     public float range;
     public int damage;
@@ -22,9 +22,14 @@ public class Turret : MonoBehaviour
     public int burst;
     private int noseCount;
     private int actualNose;
+    public float burstDelay;
+    AudioSource audio;
     
     private void Start()
     {
+        audio = GetComponent<AudioSource>();
+        canShoot = true;
+
         if (burst == 0)
         {
             burst = 1;
@@ -65,7 +70,6 @@ public class Turret : MonoBehaviour
             }
 
         }
-        nextTimeToShoot = Time.time;
         targetFinder = gameObject.AddComponent<TargetFinder>();
         targetFinder.range = range;
         targetFinder.focusOn = focusOn;
@@ -79,9 +83,9 @@ public class Turret : MonoBehaviour
             if (distance <= range)
             {
                 Aim();
-                if (transform.rotation == Quaternion.Euler(0, 0, angle) && Time.time >= nextTimeToShoot)
+                if (transform.rotation == Quaternion.Euler(0, 0, angle) && canShoot)
                 {
-                    Shoot();
+                    StartCoroutine(Shoot());
                 }
                 return;
             }
@@ -97,10 +101,12 @@ public class Turret : MonoBehaviour
         angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle),rotationSpeed);
     }
-    private void Shoot()
+    private IEnumerator Shoot()
     {
+        canShoot = false;
         for(int k=0; k < burst; k++)
         {
+            audio.Play();
             Vector2 dir;
             turretNoses[actualNose].noseParticle.Play();
             //Debug.DrawRay(transform.position, target.transform.position - transform.position, Color.red, .3f);
@@ -117,17 +123,17 @@ public class Turret : MonoBehaviour
             BulletDie bulletdie = bullet.GetComponent<BulletDie>();
             bulletdie.damage = damage;
             bulletdie.target = target;
-            nextTimeToShoot = Time.time + timeBetweenShots;
 
             actualNose += 1;
             if (actualNose >= noseCount)
             {
                 actualNose = 0;
             }
+            yield return new WaitForSeconds(burstDelay);
 
         }
-        
-
+        yield return new WaitForSeconds(timeBetweenShots);
+        canShoot = true;
     }
    
 

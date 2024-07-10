@@ -9,14 +9,12 @@ public class Bomb : MonoBehaviour
     BulletDie bulletDie;
     public void Start()
     {
-        
         bulletDie = GetComponent<BulletDie>();
         damage = bulletDie.damage;
     }
 
     public void Explode()
     {
-
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius);
         foreach(Collider2D collider in colliders)
         {

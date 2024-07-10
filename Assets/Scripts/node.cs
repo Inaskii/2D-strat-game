@@ -2,26 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class node
+public class Node
 {
     [SerializeField]
     public Vector2 pos;
-    public node parent;
+    public Node parent;
     public int gcost;
     public int hcost;
-    public node(Vector2 _pos, node _parent)
+    public Node(Vector2 _pos, Node _parent)
     {
         pos = _pos;
         parent = _parent;
         gcost = parent.gcost + 1;
     }
-    public node(Vector2 _pos)
+    public Node(Vector2 _pos)
     {
         pos = _pos;
     }
-    public bool nodeinlist(List<node> nodes)
+    public bool nodeinlist(List<Node> nodes)
     {
-        foreach(node node in nodes)
+        foreach(Node node in nodes)
         {
             if(node.pos == pos && node.parent == parent)
             {
@@ -37,5 +37,24 @@ public class node
         int cost = dx + dy;
         return cost;
     }
+    /*
+    public static bool operator == (Node a, Node b)
+    {
+        if((a.pos == b.pos) && (a.parent.pos == b.parent.pos))
+        {
+            return true;
+        }
+        return false;
+    }
+    public static bool operator !=(Node a, Node b)
+    {
+        if ((a.pos == b.pos) && (a.parent.pos == b.parent.pos))
+        {
+            return false;
+        }
+        return true;
+    }
+    */
 
 }
+

@@ -22,9 +22,12 @@ public class UnitMovement : MonoBehaviour
     public bool avoid;
     public bool walkAttack;
     public Turret turret;
-
-    public void Start()
+    Pathfinder pathfinder;
+    Coroutine coroutine;
+    Vector2 currentPath;
+    public void Awake()
     {
+        pathfinder = Camera.main.GetComponent<Pathfinder>();
         turret = GetComponentInChildren<Turret>();   
         position = transform.position;
         this.enabled = false;
@@ -32,7 +35,6 @@ public class UnitMovement : MonoBehaviour
     }
     
     private void FixedUpdate()
-
     {
         if (walkAttack == true && turret.target!=null)
         {
@@ -41,10 +43,11 @@ public class UnitMovement : MonoBehaviour
         if ( (j < path.Count-1) || (path.Count == 1 && j<1) )
         {
             direction = path[j] - position;
+            currentPath = path[j];
         }
         else 
         {
-            this.enabled = false;
+            enabled = false;
             
         }
         position = transform.position;
@@ -59,7 +62,7 @@ public class UnitMovement : MonoBehaviour
         rotquat = Quaternion.Euler(0, 0, rotation);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotquat, turnSpeed);
         
-        if (Vector2.Distance(path[j], position) > Mathf.Sqrt(num)/4)
+        if (Vector2.Distance(currentPath, position) > Mathf.Sqrt(num)/4)
         {
             transform.position = transform.position + transform.up * speed;
         }
@@ -70,40 +73,32 @@ public class UnitMovement : MonoBehaviour
         }
        
     }
-    public void Walkto(Vector2 wkp, int n, bool walkAttack_)
+    public void Walkto(Vector2 wkp, int n = 1, bool walkAttack_ = false)
     {
-        enabled = true;
+        enabled = false;
         position = transform.position;
         num = n;
         walkpos = wkp;
-        Pathfinder pathfinder = Camera.main.GetComponent<Pathfinder>();
         //path = Camera.main.GetComponent<DragSelect>().path;
-        path = pathfinder.FindPath(position, walkpos);
-        if(path == null)
+        if (coroutine != null)
         {
-            enabled = false;
-            return;
+            StopCoroutine(coroutine);
         }
+  
+        coroutine = StartCoroutine(pathfinder.FindPath(position, walkpos,Walk));
         j = 0;
         walkAttack = walkAttack_;
     }
-
-    public void Walkto(Vector2 wkp)
+    public void Walk(List<Vector2> _path) 
     {
-        enabled = true;
-        position = transform.position;
-        num = 1;
-        walkpos = wkp;
-        Pathfinder pathfinder = Camera.main.GetComponent<Pathfinder>();
-        //path = Camera.main.GetComponent<DragSelect>().path;
-        path = pathfinder.FindPath(position, walkpos);
-        if(path == null)
+        if(_path == null)
         {
             enabled = false;
             return;
         }
-        j = 0;
-        walkAttack = false;
+        enabled = true;
+        path = _path;
+
     }
     public void FollowPath(List<Vector2> _path)
     {
@@ -124,7 +119,7 @@ public class UnitMovement : MonoBehaviour
                 //Debug.Log(collider.gameObject.name);
                 dist = Vector2.Distance(collider.gameObject.transform.position, transform.position);
                 direc = (position - new Vector2(collider.gameObject.transform.position.x, collider.gameObject.transform.position.y)).normalized;
-                if (gameObject.layer != collider.gameObject.layer)
+                if (gameObject.layer == collider.gameObject.layer)
                 {
 
                     direction = (direction + size * direc / (dist*dist)).normalized;

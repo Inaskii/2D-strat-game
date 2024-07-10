@@ -80,10 +80,9 @@ public class DragSelect : MonoBehaviour
 
                 if (GO != null)
                 {
-                    movement = GO.GetComponent<UnitMovement>();
-                    if (movement != null)
+                     
+                    if (GO.TryGetComponent<UnitMovement>(out UnitMovement movement))
                     {
-                        movement.enabled = true;
                         movement.Walkto(Camera.main.ScreenToWorldPoint(Input.mousePosition),n,walkAttack);
                     }
                 }

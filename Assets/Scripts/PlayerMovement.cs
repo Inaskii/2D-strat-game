@@ -10,9 +10,10 @@ public class PlayerMovement : MonoBehaviour
     public float angle;
     public GameObject Player,mark;
     public float speed;
+    private Rigidbody2D rb;
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -45,13 +46,13 @@ public class PlayerMovement : MonoBehaviour
         }
         Vector3 NextPos = new Vector3(x, y, z);
         Camera.main.gameObject.transform.position = Vector2.Lerp(transform.position, Camera.main.gameObject.transform.position, .1f);
+        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x,Camera.main.transform.position.y,z);
         Vector3 direction = NextPos.normalized;
         if (w || a || s || d)
         {
             angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 270;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, angle), .1f);
-            transform.position = transform.position + transform.up * speed;
-
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, angle), .05f);
+            rb.AddForce(direction * speed);
         }
     }
    

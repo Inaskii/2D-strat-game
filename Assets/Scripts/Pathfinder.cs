@@ -1,33 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
+using UnityEngine.Events;
+using System;
 
 public class Pathfinder : MonoBehaviour
 {
-    public List<node> open = new List<node>();
-    public List<node> closed = new List<node>();
+    public List<Node> open = new List<Node>();
+    public List<Node> closed = new List<Node>();
     public List<Vector2> _closed = new List<Vector2>();
     public List<Vector2> _open = new List<Vector2>();
     public List<Vector2> path = new List<Vector2>();
-    public node current;
-    node[] neighbour = new node[8];
+    public Node current;
+    Node[] neighbour = new Node[8];
     public LayerMask layerMask;
-    float i;
+    //float i;
     public List<Path> paths = new List<Path>();
-
-    // Start is called before the first frame update
+    public Queue<Path> pathQueue;
+    Path currentPath;
+    
+    Thread thread;
     void Start()
     {
-        i = 0;
+        pathQueue = new Queue<Path>();
 
     }
 
-    // Update is called once per frame
     void Update()
     {
     }
-    public List<Vector2> FindPath(Vector2 from, Vector2 to)
+
+    public IEnumerator FindPath(Vector2 from, Vector2 to, Action< List<Vector2> > onpathFound)
     {
+        
+        Path newPath = new Path(from, to, null);
+        pathQueue.Enqueue(newPath);
+
 
         while (Physics2D.OverlapPoint(to, layerMask))
         {
@@ -46,7 +55,8 @@ public class Pathfinder : MonoBehaviour
             {
                 if (checkpath(path.path))
                 {
-                    return path.path;
+                    onpathFound(path.path);
+                    yield break;
                 }
                 else
                 {
@@ -56,72 +66,80 @@ public class Pathfinder : MonoBehaviour
             }
         }
 
-        open = new List<node>();
+        open = new List<Node>();
         _open = new List<Vector2>();
         path = new List<Vector2>();
-        closed = new List<node>();
+        closed = new List<Node>();
         _closed = new List<Vector2>();
-        current = new node(from);
+        current = new Node(from);
         open.Add(current);
         _open.Add(current.pos);
-        for (int k = 0; k < 3000; k++)
+        for (int k = 0; k < 200; k++)
         {
-            //  Debug.DrawLine(from, current.pos, Color.white, 1);
-            current = open[0];
-            foreach (node VT in open)
+            for (int i = 0; i < 50; i++)
             {
-
-                if ( ( current.gcost + current.Calchcost(to) ) > ( VT.gcost + VT.Calchcost(to) ) )
+                if (open.Count == 0)
                 {
-                    current = VT;
+                    yield break;
                 }
-                
-                // pega menor f cost
-            }
-            i = current.gcost + current.Calchcost(to);
-            print(i);
+                current = open[0];
 
 
-
-
-            open.Remove(current);
-            _open.Remove(current.pos);
-
-            closed.Add(current);
-            _closed.Add(current.pos);
-            if (Vector2.Distance(current.pos, to) <= 2)
-            {
-                current = new node(to, current);
-                RetracePath();
-                paths.Add(new Path(from, to, path));
-                return path;
-            }
-            Cneighbour(current.pos, current);
-            //pega os vizinho do current
-            foreach (node vector in neighbour)
-            {
-                if (Physics2D.OverlapPoint(vector.pos, layerMask) || _closed.Contains(vector.pos))
+                foreach (Node VT in open)
                 {
-                    //Debug.Log("continue");
-                    continue;
-                    //ve se o vizinho é invalido
-                }
-                if (Vector2.Distance(current.pos, from) + Vector2.Distance(current.pos, vector.pos) < Vector2.Distance(vector.pos, from) || !_open.Contains(vector.pos))
-                {
-                    if (!_open.Contains(vector.pos))
+
+                    if ((current.gcost + current.Calchcost(to)) > (VT.gcost + VT.Calchcost(to)))
                     {
-                        open.Add(vector);
-                        _open.Add(vector.pos);
+                        current = VT;
                     }
 
                 }
 
+                if (Vector2.Distance(current.pos, to) <= 2)
+                {
+                    current = new Node(to, current);
+                    RetracePath();
+                    paths.Add(new Path(from, to, path));
+                    onpathFound(path);
+                    yield break;
+                }
+
+
+
+                open.Remove(current);
+                _open.Remove(current.pos);
+                closed.Add(current);
+                _closed.Add(current.pos);
+
+
+                Cneighbour(current.pos, current);
+                //pega os vizinho do current
+                foreach (Node vector in neighbour)
+                {
+                    if (Physics2D.OverlapPoint(vector.pos, layerMask) || _closed.Contains(vector.pos))
+                    {
+                        //Debug.Log("continue");
+                        continue;
+                        //ve se o vizinho é invalido
+                    }
+                    if (Vector2.Distance(current.pos, from) + Vector2.Distance(current.pos, vector.pos) < Vector2.Distance(vector.pos, from) || !_open.Contains(vector.pos))
+                    {
+                        if (!_open.Contains(vector.pos))
+                        {
+                            open.Add(vector);
+                            _open.Add(vector.pos);
+                        }
+
+                    }
+
+                }
             }
+            yield return new WaitForEndOfFrame();
 
         }
 
         float currentDist = Mathf.Infinity;
-        foreach (node node in closed)
+        foreach (Node node in closed)
         {
             float dist = Vector2.Distance(to, node.pos);
             if (dist < currentDist)
@@ -149,9 +167,12 @@ public class Pathfinder : MonoBehaviour
                 current = current.parent;
             }
             path.Reverse();
+
         }
         paths.Add(new Path(from, to, path));
-        return path;
+        onpathFound(path);
+        yield break;
+
 
 
     }
@@ -169,18 +190,18 @@ public class Pathfinder : MonoBehaviour
         return true;
     }
 
-    void Cneighbour(Vector2 vector, node current)
+    void Cneighbour(Vector2 vector, Node current)
     {
-        neighbour[0] = new node((vector + new Vector2(0, 1)), current);
-        neighbour[1] = new node((vector + new Vector2(1, 1)), current);
-        neighbour[2] = new node((vector + new Vector2(1, 0)), current);
-        neighbour[3] = new node((vector + new Vector2(1, -1)), current);
-        neighbour[4] = new node((vector + new Vector2(0, -1)), current);
-        neighbour[5] = new node((vector + new Vector2(-1, -1)), current);
-        neighbour[6] = new node((vector + new Vector2(-1, 0)), current);
-        neighbour[7] = new node((vector + new Vector2(-1, 1)), current);
+        neighbour[0] = new Node((vector + new Vector2(0, 1)), current);
+        neighbour[1] = new Node((vector + new Vector2(1, 1)), current);
+        neighbour[2] = new Node((vector + new Vector2(1, 0)), current);
+        neighbour[3] = new Node((vector + new Vector2(1, -1)), current);
+        neighbour[4] = new Node((vector + new Vector2(0, -1)), current);
+        neighbour[5] = new Node((vector + new Vector2(-1, -1)), current);
+        neighbour[6] = new Node((vector + new Vector2(-1, 0)), current);
+        neighbour[7] = new Node((vector + new Vector2(-1, 1)), current);
 
-        foreach (node V in neighbour)
+        foreach (Node V in neighbour)
         {
             Debug.DrawLine(vector, V.pos, Color.white, .4f);
         }

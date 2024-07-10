@@ -5,7 +5,6 @@ using UnityEngine;
 [System.Serializable]
 public class Job
 {
-    public List<Vector2> path;
     public GameObject target;
     public int workerAmount;
     public string type;
@@ -17,7 +16,6 @@ public class Job
         target = _target;
         type = _type;
 
-        path = pathfinder.FindPath(Nest.transform.position, target.transform.position);
 
     }
 }

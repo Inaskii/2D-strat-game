@@ -22,7 +22,7 @@ public class AntBehaviour : MonoBehaviour
     public string jobtype;
     void Start()
     {
-        nest = GameObject.FindObjectOfType<Nest>();
+        nest = FindObjectOfType<Nest>();
         nestObject = nest.gameObject;
         state = "idle";
         movement = GetComponent<UnitMovement>();
@@ -33,7 +33,6 @@ public class AntBehaviour : MonoBehaviour
         jobtype = null;
         
     }
-
     void Update()
     {
         if (job != null)
@@ -202,12 +201,12 @@ public class AntBehaviour : MonoBehaviour
             if (item.itemname == nextItem.itemname || item.amount >= nextItem.amount)
             {
                 target = job.target;
-                print("walktobuilding");
+                //print("walktobuilding");
                 Walk();
                 if (Vector2.Distance(transform.position, job.target.transform.position) <= collectRange)
                 {
                     inventory.empty(job.target);
-                    print("deliver");
+                    //print("deliver");
                 }
                 return;
 
@@ -230,7 +229,7 @@ public class AntBehaviour : MonoBehaviour
                     nextItem.amount = maxInv;
                 }
                 target = nestObject;
-                print("gotonest");
+                //print("gotonest");
                 Walk();
                 
 
@@ -241,33 +240,11 @@ public class AntBehaviour : MonoBehaviour
             if (Vector2.Distance(nest.transform.position, gameObject.transform.position) <= collectRange)
             {
                 inventory.get(nextItem.itemname, nestObject);
-                print("getitem");
+                //print("getitem");
                 return;
             }
         }
 
-
-        /*se recursos forem o suficiente:construir
-        nova classe: em construção
-            contém inventário
-        find object of type
-        criar fila em player com construções para serem construidas
-        novo struct: buildJob
-        tem um gameobjet(contrução a ser construida) e uma lista de quem vai construir e lista de materiais
-        construtoras vão se organizar para construir, levando os recursos na quantidade certa
-        como?
-        foreach(item in lista de materiais)
-        {
-            for i in item.ammount
-        {
-
-        }
-
-        }
-
-
-
-         */
 
     }
 
