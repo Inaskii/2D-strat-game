@@ -19,6 +19,11 @@ public class Missile : MonoBehaviour
         target = GetComponent<BulletDie>().target;
         rb = GetComponent<Rigidbody2D>();
         //speed = Fspeed;
+        if (target == null)
+        {
+            bomb.Explode();
+            return;
+        }
         previousLoc = target.transform.position;
 
     }
@@ -31,7 +36,7 @@ public class Missile : MonoBehaviour
 
         }
 
-        if (target.gameObject != null)
+        if (target != null)
         {
             previousLoc = target.transform.position;
 
