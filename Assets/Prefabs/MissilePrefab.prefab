@@ -5027,4 +5027,4 @@ MonoBehaviour:
   rb: {fileID: 0}
   rotationSpeed: 200
   direction: {x: 0, y: 0}
-  speed: 2
+  speed: 5
