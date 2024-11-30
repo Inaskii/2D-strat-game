@@ -37,6 +37,24 @@ public class Node
         int cost = dx + dy;
         return cost;
     }
+
+        public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+
+        Node other = (Node)obj;
+        return pos == other.pos;
+    }
+
+    // Sobrescrevendo GetHashCode
+    public override int GetHashCode()
+    {
+        int hash = 17;
+        hash = hash * 31 + pos.GetHashCode();
+        hash = hash * 31 + (parent != null ? parent.GetHashCode() : 0);
+        return hash;
+    }
     /*
     public static bool operator == (Node a, Node b)
     {

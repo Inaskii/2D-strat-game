@@ -67,13 +67,13 @@ public class Pathfinder : MonoBehaviour
         }
 
         open = new List<Node>();
-        _open = new List<Vector2>();
+        //_open = new List<Vector2>();
         path = new List<Vector2>();
         closed = new List<Node>();
-        _closed = new List<Vector2>();
+        //_closed = new List<Vector2>();
         current = new Node(from);
         open.Add(current);
-        _open.Add(current.pos);
+        //_open.Add(current.pos);
         for (int k = 0; k < 200; k++)
         {
             for (int i = 0; i < 50; i++)
@@ -107,27 +107,26 @@ public class Pathfinder : MonoBehaviour
 
 
                 open.Remove(current);
-                _open.Remove(current.pos);
+                
                 closed.Add(current);
-                _closed.Add(current.pos);
-
+                
 
                 Cneighbour(current.pos, current);
                 //pega os vizinho do current
                 foreach (Node vector in neighbour)
                 {
-                    if (Physics2D.OverlapPoint(vector.pos, layerMask) || _closed.Contains(vector.pos))
+                    if (Physics2D.OverlapPoint(vector.pos, layerMask) || closed.Contains(vector))
                     {
                         //Debug.Log("continue");
                         continue;
-                        //ve se o vizinho é invalido
+                        //ve se o vizinho ï¿½ invalido
                     }
-                    if (Vector2.Distance(current.pos, from) + Vector2.Distance(current.pos, vector.pos) < Vector2.Distance(vector.pos, from) || !_open.Contains(vector.pos))
+                    if (Vector2.Distance(current.pos, from) + Vector2.Distance(current.pos, vector.pos) < Vector2.Distance(vector.pos, from) || !open.Contains(vector))
                     {
-                        if (!_open.Contains(vector.pos))
+                        if (!open.Contains(vector))
                         {
                             open.Add(vector);
-                            _open.Add(vector.pos);
+                            //_open.Add(vector.pos);
                         }
 
                     }
