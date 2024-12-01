@@ -16,6 +16,7 @@ public class Melee : MonoBehaviour
     public int timeBetweenShots;
     public string focusOn;
     TargetFinder targetFinder;
+    private Coroutine coroutine;
 
     void Start()
     {
@@ -24,6 +25,8 @@ public class Melee : MonoBehaviour
         targetFinder = gameObject.AddComponent<TargetFinder>();
         targetFinder.range = range;
         targetFinder.focusOn = focusOn;
+        coroutine = StartCoroutine(targetFinder.FindTarget(TargetFound));
+
 
     }
 
@@ -47,8 +50,9 @@ public class Melee : MonoBehaviour
             return;
         }
         movement.enabled = false;
-        target = targetFinder.FindTarget();
+
     }
+    
     void Attack()
     {
         targethealth = target.GetComponent<Health>();
@@ -56,6 +60,11 @@ public class Melee : MonoBehaviour
         nextTimeToShoot = Time.time + timeBetweenShots;
         movement.enabled = false;
 
+    }
+
+    public void TargetFound(GameObject _target)
+    {
+        target = _target;
     }
 
 

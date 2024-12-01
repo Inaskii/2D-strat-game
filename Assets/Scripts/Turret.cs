@@ -23,6 +23,7 @@ public class Turret : MonoBehaviour
     private int noseCount;
     private int actualNose;
     public float burstDelay;
+    private Coroutine coroutine;
     AudioSource audio;
     
     private void Start()
@@ -73,6 +74,8 @@ public class Turret : MonoBehaviour
         targetFinder = gameObject.AddComponent<TargetFinder>();
         targetFinder.range = range;
         targetFinder.focusOn = focusOn;
+        coroutine = StartCoroutine(targetFinder.FindTarget(TargetFound));
+
     }
 
     private void FixedUpdate()
@@ -91,7 +94,6 @@ public class Turret : MonoBehaviour
             }
         }
        
-            target = targetFinder.FindTarget();
         
     }
 
@@ -135,7 +137,11 @@ public class Turret : MonoBehaviour
         yield return new WaitForSeconds(timeBetweenShots);
         canShoot = true;
     }
-   
+    public void TargetFound(GameObject _target)
+    {
+        target = _target;
+    }
+
 
 }
 public class Nose

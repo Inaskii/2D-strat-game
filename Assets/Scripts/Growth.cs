@@ -16,7 +16,6 @@ public class Growth : MonoBehaviour
     public List<GameObject> buildingPrefabs;
     public GameObject sporePrefab;
     public List<GameObject> spores;
-    public int SlowBubbleFactor;
     //int i;
     public int maxSpore;
     public int maxMain;

@@ -22,9 +22,9 @@ public class UnitMovement : MonoBehaviour
     public bool avoid;
     public bool walkAttack;
     public Turret turret;
-    Pathfinder pathfinder;
-    Coroutine coroutine;
-    Vector2 currentPath;
+    private Pathfinder pathfinder;
+    private Coroutine coroutine;
+    private Vector2 currentPath;
     public void Awake()
     {
         pathfinder = Camera.main.GetComponent<Pathfinder>();

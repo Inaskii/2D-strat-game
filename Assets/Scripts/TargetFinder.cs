@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TargetFinder : MonoBehaviour
 {
@@ -31,54 +32,75 @@ public class TargetFinder : MonoBehaviour
 
         }
     }
-    private void FixedUpdate()
-    {
-        frames++;
-        if (frames == 10)
-        {
-            frames = 0;
-            Fixed10Update();
-        }
-    }
-    private void Fixed10Update()
-    {
-        targetC = Physics2D.OverlapCircleAll(point: transform.position, radius: range, layerMask: layerMask);
+ 
+    
 
-        if (targetC.Length != n)
+    public IEnumerator FindTarget(Action<GameObject> onTargetFound)
+    {
+        int t;
+        while (true)
         {
-            colliders = new List<Collider2D>();
-            foreach (Collider2D collider2d in targetC)
+            target = null;
+            float targdist;
+            targdist = Mathf.Infinity;
+            targetC = Physics2D.OverlapCircleAll(point: transform.position, radius: range, layerMask: layerMask);
+
+            if (targetC.Length != n)
             {
-                if (collider2d.gameObject.tag == focusOn)
+                colliders = new List<Collider2D>();
+                foreach (Collider2D collider2d in targetC)
                 {
-                    colliders.Add(collider2d);
+                    if (collider2d.gameObject.tag == focusOn)
+                    {
+                        colliders.Add(collider2d);
+                    }
+
                 }
 
+                n = targetC.Length;
             }
-            n = targetC.Length;
-        }
-    }
-    public GameObject FindTarget()
-    {
-        target = null;
-        float targdist;
-        targdist = Mathf.Infinity;
-        foreach (Collider2D collider2d in colliders)
-        {
-            if (collider2d != null)
+
+            t = 15;
+            while (t-- != 0) 
             {
-                
+                yield return new WaitForEndOfFrame();
+            }
+
+            foreach (Collider2D collider2d in colliders)
+            {
+                if (collider2d == null)
+                {
+                    continue;
+                }
                 float dist = Vector2.Distance(collider2d.transform.position, transform.position);
                 if (dist <= targdist && dist <= range)
                 {
+
                     target = collider2d.gameObject;
                     targdist = Vector2.Distance(target.transform.position, transform.position);
                 }
+
             }
+
+            onTargetFound(target);
+
+            t = 15;
+            while (t-- != 0) 
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+
         }
 
-        return target;
+
     }
-    
+    private void OnDrawGizmosSelected()
+    {
+        // Visualize the range in the editor
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, range);
+    }
+
 }
 
