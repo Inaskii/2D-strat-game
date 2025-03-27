@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using System.Threading;
-using UnityEngine.Events;
-using System;
+using UnityEngine.UIElements;
+using Unity.Mathematics;
+using System.Linq;
 
 public class Pathfinder : MonoBehaviour
 {
-    public List<Node> open = new List<Node>();
+    Heap<(Node,double)> open = new Heap<(Node,double)>();
     public List<Node> closed = new List<Node>();
     public List<Vector2> _closed = new List<Vector2>();
     public List<Vector2> _open = new List<Vector2>();
@@ -66,13 +68,13 @@ public class Pathfinder : MonoBehaviour
             }
         }
 
-        open = new List<Node>();
+        open = new Heap<(Node, double)>();
         //_open = new List<Vector2>();
         path = new List<Vector2>();
         closed = new List<Node>();
         //_closed = new List<Vector2>();
         current = new Node(from);
-        open.Add(current);
+        open.Enqueue((current,0));
         //_open.Add(current.pos);
         for (int k = 0; k < 200; k++)
         {
@@ -82,8 +84,9 @@ public class Pathfinder : MonoBehaviour
                 {
                     yield break;
                 }
-                current = open[0];
+                var cur = open.Dequeue();
 
+                /*
 
                 foreach (Node VT in open)
                 {
@@ -94,6 +97,7 @@ public class Pathfinder : MonoBehaviour
                     }
 
                 }
+                */
 
                 if (Vector2.Distance(current.pos, to) <= 2)
                 {
@@ -106,7 +110,6 @@ public class Pathfinder : MonoBehaviour
 
 
 
-                open.Remove(current);
                 
                 closed.Add(current);
                 
@@ -206,6 +209,26 @@ public class Pathfinder : MonoBehaviour
         }
 
     }
+            void Enqueue(Node item, int priority)
+        {
+            if (!open.ContainsKey(priority))
+                open[priority] = new Queue<string>();
+
+            open[priority].Enqueue(item);
+        }
+
+        string Dequeue()
+        {
+            if (open.Count == 0) throw new InvalidOperationException("Fila vazia");
+
+            var firstKey = open.Keys.Min(); // O(1) para SortedDictionary
+            var queue = open[firstKey];
+            var item = queue.Dequeue();
+
+            if (queue.Count == 0) open.Remove(firstKey); // Remove a fila vazia
+
+            return item;
+        }
 }
         
         
