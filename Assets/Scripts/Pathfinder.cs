@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Threading;
 using UnityEngine.Events;
 using System;
 
 public class Pathfinder : MonoBehaviour
 {
+    public BinaryHeap<Node> binaryHeap;
     public List<Node> open = new List<Node>();
     public List<Node> closed = new List<Node>();
-    public List<Vector2> _closed = new List<Vector2>();
-    public List<Vector2> _open = new List<Vector2>();
+    public List<Vector2> closedPositions = new();
+    public List<Vector2> openPositions = new();
     public List<Vector2> path = new List<Vector2>();
     public Node current;
     Node[] neighbour = new Node[8];
@@ -19,21 +19,19 @@ public class Pathfinder : MonoBehaviour
     public List<Path> paths = new List<Path>();
     public Queue<Path> pathQueue;
     Path currentPath;
-    
-    Thread thread;
+
     void Start()
     {
         pathQueue = new Queue<Path>();
-
+        binaryHeap = new BinaryHeap<Node>(); // Initialize BinaryHeap
     }
 
     void Update()
     {
     }
 
-    public IEnumerator FindPath(Vector2 from, Vector2 to, Action< List<Vector2> > onpathFound)
+    public IEnumerator FindPath(Vector2 from, Vector2 to, Action<List<Vector2>> onpathFound)
     {
-        
         Path newPath = new Path(from, to, null);
         pathQueue.Enqueue(newPath);
 
@@ -53,7 +51,7 @@ public class Pathfinder : MonoBehaviour
         {
             if ((path.from == from) && (path.to == to))
             {
-                if (checkpath(path.path))
+                if (path.path != null && checkpath(path.path))
                 {
                     onpathFound(path.path);
                     yield break;
@@ -67,13 +65,12 @@ public class Pathfinder : MonoBehaviour
         }
 
         open = new List<Node>();
-        //_open = new List<Vector2>();
+        binaryHeap = new BinaryHeap<Node>(); // Initialize BinaryHeap
         path = new List<Vector2>();
         closed = new List<Node>();
-        //_closed = new List<Vector2>();
         current = new Node(from);
         open.Add(current);
-        //_open.Add(current.pos);
+        binaryHeap.Enqueue(current, 0); // Enqueue with priority 0
         for (int k = 0; k < 200; k++)
         {
             for (int i = 0; i < 50; i++)
@@ -82,18 +79,8 @@ public class Pathfinder : MonoBehaviour
                 {
                     yield break;
                 }
-                current = open[0];
 
-
-                foreach (Node VT in open)
-                {
-
-                    if ((current.gcost + current.Calchcost(to)) > (VT.gcost + VT.Calchcost(to)))
-                    {
-                        current = VT;
-                    }
-
-                }
+                current = binaryHeap.Dequeue(); // Dequeue from BinaryHeap
 
                 if (Vector2.Distance(current.pos, to) <= 2)
                 {
@@ -107,9 +94,9 @@ public class Pathfinder : MonoBehaviour
 
 
                 open.Remove(current);
-                
+
                 closed.Add(current);
-                
+
 
                 Cneighbour(current.pos, current);
                 //pega os vizinho do current
@@ -121,10 +108,17 @@ public class Pathfinder : MonoBehaviour
                         continue;
                         //ve se o vizinho � invalido
                     }
-                    if (Vector2.Distance(current.pos, from) + Vector2.Distance(current.pos, vector.pos) < Vector2.Distance(vector.pos, from) || !open.Contains(vector))
+                    float currentToFromDistance = Vector2.Distance(current.pos, from);
+                    float currentToNeighborDistance = Vector2.Distance(current.pos, vector.pos);
+                    float neighborToFromDistance = Vector2.Distance(vector.pos, from);
+                    bool isShorterPath = currentToFromDistance + currentToNeighborDistance < neighborToFromDistance;
+                    bool isNotInOpenList = !open.Contains(vector);
+
+                    if (isShorterPath || isNotInOpenList)
                     {
                         if (!open.Contains(vector))
                         {
+                            binaryHeap.Enqueue(vector, vector.Calchcost(to)); // Enqueue with calculated priority
                             open.Add(vector);
                             //_open.Add(vector.pos);
                         }
@@ -207,11 +201,11 @@ public class Pathfinder : MonoBehaviour
 
     }
 }
-        
-        
 
 
-    
+
+
+
 
 
 
@@ -222,12 +216,11 @@ public class Path
     public Vector2 to;
     public List<Vector2> path;
 
-    public Path(Vector2 _from, Vector2 _to, List<Vector2> _path)
+    public Path(Vector2 from, Vector2 to, List<Vector2> path)
     {
-        from = _from;
-        to = _to;
-        path = _path;
-
+        this.from = from;
+        this.to = to;
+        this.path = path;
     }
 }
 

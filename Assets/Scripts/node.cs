@@ -47,7 +47,6 @@ public class Node
         return pos == other.pos;
     }
 
-    // Sobrescrevendo GetHashCode
     public override int GetHashCode()
     {
         int hash = 17;
@@ -55,24 +54,15 @@ public class Node
         hash = hash * 31 + (parent != null ? parent.GetHashCode() : 0);
         return hash;
     }
-    /*
-    public static bool operator == (Node a, Node b)
+    public static bool operator <(Node a, Node b)
     {
-        if((a.pos == b.pos) && (a.parent.pos == b.parent.pos))
-        {
-            return true;
-        }
-        return false;
+        return (a.gcost + a.hcost) < (b.gcost + b.hcost);
     }
-    public static bool operator !=(Node a, Node b)
+
+    public static bool operator >(Node a, Node b)
     {
-        if ((a.pos == b.pos) && (a.parent.pos == b.parent.pos))
-        {
-            return false;
-        }
-        return true;
+        return (a.gcost + a.hcost) > (b.gcost + b.hcost);
     }
-    */
 
 }
 

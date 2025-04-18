@@ -22,7 +22,7 @@ public class AntBehaviour : MonoBehaviour
     public string jobtype;
     void Start()
     {
-        nest = FindObjectOfType<Nest>();
+        nest = FindAnyObjectByType<Nest>();
         nestObject = nest.gameObject;
         state = "idle";
         movement = GetComponent<UnitMovement>();
